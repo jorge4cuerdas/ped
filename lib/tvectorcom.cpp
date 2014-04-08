@@ -173,7 +173,7 @@ bool TVectorCom::Redimensionar(int newtam) {
 					this->~TVectorCom();
 					this->tamano = newtam;
 					this->c = new TComplejo[newtam];
-					for (int i = 0; i < aux.tamano; i++) {
+					for (int i = 0; i < newtam; i++) {
 						this->c[i] = aux.c[i];
 					}
 				}
