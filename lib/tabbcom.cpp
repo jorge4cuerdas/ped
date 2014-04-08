@@ -5,19 +5,26 @@
  *      Author: jorge
  */
 
+////////////
+//TNODOABB//
+////////////
+
 TNodoABB::TNodoABB() {
+    //No hay que hacer nada, no hay punteros en la clase.
 }
 ;
 
-TNodoABB::TNodoABB(TNodoABB &nodo) {
-
+TNodoABB::TNodoABB(const TNodoABB &nodo) {
+    item = nodo.item;
+    iz = nodo.item;
+    de = nodo.item;
 }
 
 TNodoABB::~TNodoABB() {
-
+    //No hay que hacer nada, no hay punteros en la clase.
 }
 
-TNodoABB & TNodoABB::operator=(TNodoABB &nodo) {
+TNodoABB & TNodoABB::operator=(const TNodoABB &nodo) {
 	if(this != &nodo){
 		this->~TNodoABB();
 
@@ -27,10 +34,29 @@ TNodoABB & TNodoABB::operator=(TNodoABB &nodo) {
 	}
 }
 
-TABBCom::TABBCom();
-TABBCom::TABBCom(TABBCom &);
-TABBCom::~TABBCom();
-TABBCom & TABBCom::operator=(TABBCom &);
+///////////
+//TABBCOM//
+///////////
+
+TABBCom::TABBCom(){
+    nodo = NULL;
+}
+
+TABBCom::TABBCom(const TABBCom &){
+    
+}
+
+TABBCom::~TABBCom(){
+    
+}
+
+TABBCom & TABBCom::operator=(TABBCom &){
+    
+}
+
+void TABBCom::Copiar(const TABBCom){
+    
+}
 
 bool TABBCom::operator==(TABBCom &);
 bool TABBCom::EsVacio();

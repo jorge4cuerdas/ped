@@ -14,8 +14,10 @@
 
 using namespace std;
 
+//Prototipo de la clase TABBCom
 class TABBCom;
 
+//Declaración de la clase TNodoABB
 class TNodoABB {
 	friend class TABBCom;
 
@@ -30,6 +32,7 @@ private:
 	TABBCom iz, de;
 };
 
+//Declaración de la clase TABBCom
 class TABBCom {
 	friend class TNodoABB;
 	friend ostream & operator<<(ostream &, const TABBCom &);
@@ -40,25 +43,26 @@ public:
 	~TABBCom();
 	TABBCom & operator=(const TABBCom &);
 
-	bool operator==(Tconst ABBCom &);
-	bool EsVacio();
+	bool operator==(const TABBCom &) const;
+	bool EsVacio() const;
 	bool Insertar(const TComplejo &);
 	bool Borrar(const TComplejo &);
-	bool Buscar(const TComplejo &);
-	TComplejo Raiz();
-	int Altura();
-	int Nodos();
-	int NodosHoja();
-	TVectorCom Inorden();
-	TVectorCom Preorden();
-	TVectorCom Postorden();
-	TVectorCom Niveles();
-	void InordenAux(const TVectorCom &, int &);
-	void PreordenAux(const TVectorCom &, int &);
-	void PostordenAux(const TVectorCom &, int &);
+	bool Buscar(const TComplejo &) const;
+	TComplejo Raiz() const;
+	int Altura() const;
+	int Nodos() const;
+	int NodosHoja() const;
+	TVectorCom Inorden() const;
+	TVectorCom Preorden() const;
+	TVectorCom Postorden() const;
+	TVectorCom Niveles() const;
+	void InordenAux(const TVectorCom &, int &) const;
+	void PreordenAux(const TVectorCom &, int &) const;
+	void PostordenAux(const TVectorCom &, int &) const;
 
 private:
 	TNodoABB *nodo;
+    void Copiar(const TABBCom);
 };
 
 #endif /* TABBCOM_CPP_ */
