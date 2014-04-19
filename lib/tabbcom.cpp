@@ -42,20 +42,34 @@ TABBCom::TABBCom(){
     nodo = NULL;
 }
 
-TABBCom::TABBCom(const TABBCom &){
-    
+TABBCom::TABBCom(const TABBCom &origen){
+    Copiar(origen);
 }
 
 TABBCom::~TABBCom(){
-    
+    if(nodo != NULL){
+    	delete nodo;
+    	nodo == NULL;
+    }
 }
 
-TABBCom & TABBCom::operator=(TABBCom &){
+TABBCom & TABBCom::operator=(const TABBCom &origen){
+    this->~TABBCom();
+    Copiar(origen);
     
+    return * this;
 }
 
-void TABBCom::Copiar(const TABBCom){
-    
+void TABBCom::Copiar(const TABBCom &origen){
+    if(origen.nodo != NULL){
+    	TNodoABB *nodo = new TNodoABB();
+    	nodo->item = origen.nodo->item;
+    	this->nodo = nodo;
+    	(nodo->iz).Copiar(origen.nodo->iz);
+    	(nodo->de).Copiar(origen.nodo->de);
+    }
+    else
+    	nodo = NULL;
 }
 
 bool TABBCom::operator==(TABBCom &);

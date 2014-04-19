@@ -14,7 +14,7 @@
 
 using namespace std;
 
-//Prototipo de la clase TABBCom
+//Declaracion de la clase TABBCom
 class TABBCom;
 
 //Declaración de la clase TNodoABB
