@@ -5,6 +5,8 @@
  *      Author: jorge
  */
 
+#include "tabbcom.h"
+
 ////////////
 //TNODOABB//
 ////////////
