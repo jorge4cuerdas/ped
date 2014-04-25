@@ -62,7 +62,8 @@ public:
 
 private:
 	TNodoABB *nodo;
-    void Copiar(const TABBCom);
+    void Copiar(const TABBCom &);
+    bool esHoja() const;
 };
 
 #endif /* TABBCOM_CPP_ */
