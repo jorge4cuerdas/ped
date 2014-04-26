@@ -18,8 +18,8 @@ TNodoABB::TNodoABB() {
 
 TNodoABB::TNodoABB(const TNodoABB &nodo) {
     item = nodo.item;
-    iz = nodo.item;
-    de = nodo.item;
+    iz = nodo.iz;
+    de = nodo.de;
 }
 
 TNodoABB::~TNodoABB() {
@@ -34,6 +34,8 @@ TNodoABB & TNodoABB::operator=(const TNodoABB &nodo) {
 		this->de = nodo.de;
 		this->iz = nodo.iz;
 	}
+
+	return *this;
 }
 
 ///////////
@@ -75,11 +77,8 @@ void TABBCom::Copiar(const TABBCom &origen){
 }
 
 bool TABBCom::operator==(const TABBCom &arbol) const{
-	if(this->Nodos() == arbol.Nodos()){
-		bool iguales = true;
-
-
-	}
+	if(this->Inorden() == arbol.Inorden())
+		return true;
 	else
 		return false;
 }
@@ -123,14 +122,40 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 	if(this->Buscar(complejo)){
 		if(this->nodo->item == complejo){
 			if(this->esHoja()){
-				//Cuando el elemento a borrar solo sea una hoja
+				delete nodo;
+				nodo = NULL;
+
+				borrado = true;
 			}
 			else{
 				if(this->nodo->iz.EsVacio() || this->nodo->de.EsVacio()){
-					//Cuando solo tiene un subarbol hijo
+					if(this->nodo->iz.EsVacio()){//Sin subarbol izq
+						TNodoABB *aux;
+
+						aux = nodo;
+						nodo = nodo->de.nodo;
+						aux->de.nodo = NULL;
+						delete aux;
+						aux = NULL;
+
+						borrado = true;
+					}
+					else{//Sin subarbol der
+						TNodoABB *aux;
+
+						aux = nodo;
+						nodo = nodo->iz.nodo;
+						aux->iz.nodo = NULL;
+						delete aux;
+						aux = NULL;
+
+						borrado = true;
+					}
 				}
-				else{
-					//Cuando tiene dos subarboles hijo.
+				else{//Cuando tiene dos subarboles hijo.
+					this->Sustituir();
+
+					borrado = true;
 				}
 			}
 
@@ -145,6 +170,28 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 	}
 
 	return borrado;
+}
+
+void TABBCom::Sustituir(){
+	TNodoABB *anterior, *posterior, *actual;
+
+	actual = this->nodo;
+	posterior = this->nodo->iz.nodo; //Tenemos que sustituir por algun nodo del subarbol iz
+	anterior = this->nodo;
+
+	if(posterior->de.EsVacio()){//No hay subarbol der por lo tanto este es el mayor.
+		actual->item = posterior->item;
+		actual->iz.nodo = posterior->iz.nodo;
+	}
+	else{//Buscamos iterativamente el mayor de la ezquierda (estara en una hoja lo mas a la derecha posible).
+		while(!posterior->de.EsVacio()){
+			anterior = posterior;
+			posterior = posterior->de.nodo;
+		}
+
+		anterior->de.nodo = posterior->iz.nodo;
+		actual->item = posterior->item;
+	}
 }
 
 bool TABBCom::esHoja() const {
@@ -203,10 +250,42 @@ int TABBCom::NodosHoja() const{
 		return 0;
 }
 
-TVectorCom TABBCom::Inorden();
-TVectorCom TABBCom::Preorden();
-TVectorCom TABBCom::Postorden();
-TVectorCom TABBCom::Niveles();
-void TABBCom::InordenAux(TVectorCom &, int &);
-void TABBCom::PreordenAux(TVectorCom &, int &);
-void TABBCom::PostordenAux(TVectorCom &, int &);
+TVectorCom TABBCom::Inorden() const{
+	int posicion = 1;
+	TVectorCom v(this->Nodos());
+	this->InordenAux(v, posicion);
+
+	return v;
+}
+
+TVectorCom TABBCom::Preorden() const {
+	int posicion = 1;
+	TVectorCom v(this->Nodos());
+	this->PreordenAux(v, posicion);
+
+	return v;
+}
+
+TVectorCom TABBCom::Postorden() const {
+	int posicion = 1;
+	TVectorCom v(this->Nodos());
+	this->PostordenAux(v, posicion);
+
+	return v;
+}
+
+TVectorCom TABBCom::Niveles() const{
+
+}
+
+void TABBCom::InordenAux(TVectorCom &v, int &x) const{
+
+}
+
+void TABBCom::PreordenAux(TVectorCom &v, int &x) const{
+
+}
+
+void TABBCom::PostordenAux(TVectorCom &v, int &x) const{
+
+}

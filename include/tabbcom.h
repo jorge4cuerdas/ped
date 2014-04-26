@@ -56,14 +56,16 @@ public:
 	TVectorCom Preorden() const;
 	TVectorCom Postorden() const;
 	TVectorCom Niveles() const;
-	void InordenAux(const TVectorCom &, int &) const;
-	void PreordenAux(const TVectorCom &, int &) const;
-	void PostordenAux(const TVectorCom &, int &) const;
+	void InordenAux(TVectorCom &, int &) const;
+	void PreordenAux(TVectorCom &, int &) const;
+	void PostordenAux(TVectorCom &, int &) const;
 
 private:
 	TNodoABB *nodo;
+
     void Copiar(const TABBCom &);
     bool esHoja() const;
+    void Sustituir();
 };
 
 #endif /* TABBCOM_CPP_ */
