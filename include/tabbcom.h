@@ -14,23 +14,7 @@
 
 using namespace std;
 
-//Declaracion de la clase TABBCom
-class TABBCom;
-
-//Declaración de la clase TNodoABB
-class TNodoABB {
-	friend class TABBCom;
-
-public:
-	TNodoABB();
-	TNodoABB(const TNodoABB &);
-	~TNodoABB();
-	TNodoABB & operator=(const TNodoABB &);
-
-private:
-	TComplejo item;
-	TABBCom iz, de;
-};
+class TNodoABB;
 
 //Declaración de la clase TABBCom
 class TABBCom {
@@ -66,6 +50,22 @@ private:
     void Copiar(const TABBCom &);
     bool esHoja() const;
     void Sustituir();
+    void NivAux(TVectorCom &, int &) const;
+};
+
+//Declaración de la clase TNodoABB
+class TNodoABB {
+	friend class TABBCom;
+
+public:
+	TNodoABB();
+	TNodoABB(const TNodoABB &);
+	~TNodoABB();
+	TNodoABB & operator=(const TNodoABB &);
+
+private:
+	TComplejo item;
+	TABBCom iz, de;
 };
 
 #endif /* TABBCOM_CPP_ */

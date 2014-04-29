@@ -11,10 +11,10 @@
 //TNODOABB//
 ////////////
 
-TNodoABB::TNodoABB() {
+TNodoABB::TNodoABB()
+{
     //No hay que hacer nada, no hay punteros en la clase.
 }
-;
 
 TNodoABB::TNodoABB(const TNodoABB &nodo) {
     item = nodo.item;
@@ -43,7 +43,7 @@ TNodoABB & TNodoABB::operator=(const TNodoABB &nodo) {
 ///////////
 
 TABBCom::TABBCom(){
-    nodo = NULL;
+    this->nodo = NULL;
 }
 
 TABBCom::TABBCom(const TABBCom &origen){
@@ -51,29 +51,44 @@ TABBCom::TABBCom(const TABBCom &origen){
 }
 
 TABBCom::~TABBCom(){
-    if(nodo != NULL){
+    /*if(nodo != NULL){
     	delete nodo;
     	nodo == NULL;
     }
+    */
+
+	while(!this->EsVacio()){
+		TNodoABB *aux = new TNodoABB();
+
+		aux = this->nodo;
+
+		delete this->nodo;
+		this->nodo = NULL;
+
+		aux->de.~TABBCom();
+		aux->iz.~TABBCom();
+	}
 }
 
 TABBCom & TABBCom::operator=(const TABBCom &origen){
-    this->~TABBCom();
-    Copiar(origen);
+    if(this != &origen){
+    	this->~TABBCom();
+    	Copiar(origen);
+    }
     
     return * this;
 }
 
 void TABBCom::Copiar(const TABBCom &origen){
-    if(origen.nodo != NULL){
+    if(!origen.EsVacio()){
     	TNodoABB *nodo = new TNodoABB();
     	nodo->item = origen.nodo->item;
     	this->nodo = nodo;
-    	(nodo->iz).Copiar(origen.nodo->iz);
-    	(nodo->de).Copiar(origen.nodo->de);
+    	(this->nodo->iz).Copiar(origen.nodo->iz);
+    	(this->nodo->de).Copiar(origen.nodo->de);
     }
     else
-    	nodo = NULL;
+    	this->nodo = NULL;
 }
 
 bool TABBCom::operator==(const TABBCom &arbol) const{
@@ -93,12 +108,12 @@ bool TABBCom::EsVacio() const{
 bool TABBCom::Insertar(const TComplejo &complejo){
 	bool insertado = false;
 
-	if(!this->Buscar(complejo)){
+	if(!this->EsVacio() && !this->Buscar(complejo)){
 		if(this->nodo->de.EsVacio() && this->nodo->iz.EsVacio()){
 			TNodoABB *aux = new TNodoABB();
 			aux->item = complejo;
 
-			if(complejo > this->nodo->item)
+			if(complejo.Re() > this->nodo->item.Re())
 				this->nodo->de.nodo = aux;
 			else
 				this->nodo->iz.nodo = aux;
@@ -106,7 +121,7 @@ bool TABBCom::Insertar(const TComplejo &complejo){
 			insertado = true;
 		}
 		else{
-			if(complejo > this->nodo->item)
+			if(complejo.Re() > this->nodo->item.Re())
 				this->nodo->de.Insertar(complejo);
 			else
 				this->nodo->iz.Insertar(complejo);
@@ -162,7 +177,7 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 			borrado = true;
 		}
 		else{
-			if(complejo > this->nodo->item)
+			if(complejo.Re() > this->nodo->item.Re())
 				this->nodo->de.Borrar(complejo);
 			else
 				this->nodo->iz.Borrar(complejo);
@@ -218,7 +233,7 @@ bool TABBCom::Buscar(const TComplejo &complejo)const{
 
 TComplejo TABBCom::Raiz() const{
 	if(this->EsVacio())
-		return new TComplejo();
+		return TComplejo();
 	else
 		return nodo->item;
 }
@@ -275,7 +290,21 @@ TVectorCom TABBCom::Postorden() const {
 }
 
 TVectorCom TABBCom::Niveles() const{
+	TVectorCom v(this->Nodos());
+	int posicion = 1;
 
+	NivAux(v, posicion);
+
+	return v;
+}
+
+void TABBCom::NivAux(TVectorCom &v, int &pos) const{
+	while(!this->EsVacio()){
+		v[pos] = this->nodo->item;
+		pos++;
+		this->nodo->iz.NivAux(v, pos);
+		this->nodo->de.NivAux(v, pos);
+	}
 }
 
 void TABBCom::InordenAux(TVectorCom &v, int &x) const{
