@@ -51,6 +51,7 @@ private:
     bool esHoja() const;
     void Sustituir();
     void NivAux(TVectorCom &, int &) const;
+    bool mayor(TComplejo) const;
 };
 
 //Declaración de la clase TNodoABB

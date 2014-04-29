@@ -11,23 +11,22 @@
 //TNODOABB//
 ////////////
 
-TNodoABB::TNodoABB()
-{
-    //No hay que hacer nada, no hay punteros en la clase.
+TNodoABB::TNodoABB() {
+	//No hay que hacer nada, no hay punteros en la clase.
 }
 
 TNodoABB::TNodoABB(const TNodoABB &nodo) {
-    item = nodo.item;
-    iz = nodo.iz;
-    de = nodo.de;
+	item = nodo.item;
+	iz = nodo.iz;
+	de = nodo.de;
 }
 
 TNodoABB::~TNodoABB() {
-    //No hay que hacer nada, no hay punteros en la clase.
+	//No hay que hacer nada, no hay punteros en la clase.
 }
 
 TNodoABB & TNodoABB::operator=(const TNodoABB &nodo) {
-	if(this != &nodo){
+	if (this != &nodo) {
 		this->~TNodoABB();
 
 		this->item = nodo.item;
@@ -42,86 +41,89 @@ TNodoABB & TNodoABB::operator=(const TNodoABB &nodo) {
 //TABBCOM//
 ///////////
 
-TABBCom::TABBCom(){
-    this->nodo = NULL;
+TABBCom::TABBCom() {
+	this->nodo = NULL;
 }
 
-TABBCom::TABBCom(const TABBCom &origen){
-    Copiar(origen);
+TABBCom::TABBCom(const TABBCom &origen) {
+	Copiar(origen);
 }
 
-TABBCom::~TABBCom(){
-    /*if(nodo != NULL){
-    	delete nodo;
-    	nodo == NULL;
-    }
-    */
-
-	while(!this->EsVacio()){
+TABBCom::~TABBCom() {
+	while (!this->EsVacio()) {
 		TNodoABB *aux = new TNodoABB();
-
 		aux = this->nodo;
 
 		delete this->nodo;
 		this->nodo = NULL;
 
-		aux->de.~TABBCom();
-		aux->iz.~TABBCom();
+		this->nodo->iz.~TABBCom();
+		this->nodo->de.~TABBCom();
 	}
 }
 
-TABBCom & TABBCom::operator=(const TABBCom &origen){
-    if(this != &origen){
-    	this->~TABBCom();
-    	Copiar(origen);
-    }
-    
-    return * this;
+TABBCom & TABBCom::operator=(const TABBCom &origen) {
+	if (this != &origen) {
+		this->~TABBCom();
+		this->Copiar(origen);
+	}
+
+	return *this;
 }
 
-void TABBCom::Copiar(const TABBCom &origen){
-    if(!origen.EsVacio()){
-    	TNodoABB *nodo = new TNodoABB();
-    	nodo->item = origen.nodo->item;
-    	this->nodo = nodo;
-    	(this->nodo->iz).Copiar(origen.nodo->iz);
-    	(this->nodo->de).Copiar(origen.nodo->de);
-    }
-    else
-    	this->nodo = NULL;
+void TABBCom::Copiar(const TABBCom &origen) {
+	if (!origen.EsVacio()) {
+		this->nodo = new TNodoABB();
+		this->nodo->item = origen.nodo->item;
+		this->nodo->iz.Copiar(origen.nodo->iz);
+		this->nodo->de.Copiar(origen.nodo->de);
+	} else
+		this->nodo = NULL;
 }
 
-bool TABBCom::operator==(const TABBCom &arbol) const{
-	if(this->Inorden() == arbol.Inorden())
+bool TABBCom::operator==(const TABBCom &arbol) const {
+	if (this->Inorden() == arbol.Inorden())
 		return true;
 	else
 		return false;
 }
 
-bool TABBCom::EsVacio() const{
-	if(nodo)
+bool TABBCom::EsVacio() const {
+	if (nodo)
 		return false;
 	else
 		return true;
 }
 
-bool TABBCom::Insertar(const TComplejo &complejo){
+bool TABBCom::Buscar(const TComplejo &complejo) const {
+	if (!EsVacio()) {
+		if (this->nodo->item == complejo)
+			return true;
+		else {
+			if (this->nodo->iz.Buscar(complejo)
+					|| this->nodo->de.Buscar(complejo))
+				return true;
+			else
+				return false;
+		}
+	}
+
+	return false;
+}
+
+bool TABBCom::Insertar(const TComplejo &complejo) {
 	bool insertado = false;
 
-	if(!this->EsVacio() && !this->Buscar(complejo)){
-		if(this->nodo->de.EsVacio() && this->nodo->iz.EsVacio()){
-			TNodoABB *aux = new TNodoABB();
-			aux->item = complejo;
+	if(this->EsVacio()){
+		TNodoABB *aux = new TNodoABB();
+		aux->item = complejo;
+		this->nodo = aux;
 
-			if(complejo.Re() > this->nodo->item.Re())
-				this->nodo->de.nodo = aux;
-			else
-				this->nodo->iz.nodo = aux;
-
-			insertado = true;
-		}
-		else{
-			if(complejo.Re() > this->nodo->item.Re())
+		return true;
+	}
+	else{
+		if(!this->Buscar(complejo)){
+			if(this->mayor(complejo))
 				this->nodo->de.Insertar(complejo);
 			else
 				this->nodo->iz.Insertar(complejo);
@@ -131,20 +133,48 @@ bool TABBCom::Insertar(const TComplejo &complejo){
 	return insertado;
 }
 
-bool TABBCom::Borrar(const TComplejo &complejo){
+bool TABBCom::mayor(TComplejo complejo) const {
+	bool may = false;
+
+	if (complejo.Mod() == this->nodo->item.Mod()) {
+		if (complejo.Re() == this->nodo->item.Re()) {
+			if (complejo.Im() == this->nodo->item.Im()) //si mod, re e im son iguales -> false
+				may = false;
+			else {
+				if (complejo.Im() < this->nodo->item.Im())
+					may = false;
+				if (complejo.Im() > this->nodo->item.Im())
+					may = true;;
+			}
+		} else {
+			if (complejo.Re() < this->nodo->item.Re())
+				may = false;
+			if (complejo.Re() > this->nodo->item.Re())
+				may = true;
+		}
+	} else {
+		if (complejo.Mod() < this->nodo->item.Mod())
+			may = false;
+		if (complejo.Mod() > this->nodo->item.Mod())
+			may = true;
+	}
+
+	return may;
+}
+
+bool TABBCom::Borrar(const TComplejo &complejo) {
 	bool borrado = false;
 
-	if(this->Buscar(complejo)){
-		if(this->nodo->item == complejo){
-			if(this->esHoja()){
+	if (this->Buscar(complejo)) {
+		if (this->nodo->item == complejo) {
+			if (this->esHoja()) {
 				delete nodo;
 				nodo = NULL;
 
 				borrado = true;
-			}
-			else{
-				if(this->nodo->iz.EsVacio() || this->nodo->de.EsVacio()){
-					if(this->nodo->iz.EsVacio()){//Sin subarbol izq
+			} else {
+				if (this->nodo->iz.EsVacio() || this->nodo->de.EsVacio()) {
+					if (this->nodo->iz.EsVacio()) { //Sin subarbol izq
 						TNodoABB *aux;
 
 						aux = nodo;
@@ -154,8 +184,7 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 						aux = NULL;
 
 						borrado = true;
-					}
-					else{//Sin subarbol der
+					} else { //Sin subarbol der
 						TNodoABB *aux;
 
 						aux = nodo;
@@ -166,8 +195,7 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 
 						borrado = true;
 					}
-				}
-				else{//Cuando tiene dos subarboles hijo.
+				} else { //Cuando tiene dos subarboles hijo.
 					this->Sustituir();
 
 					borrado = true;
@@ -175,9 +203,8 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 			}
 
 			borrado = true;
-		}
-		else{
-			if(complejo.Re() > this->nodo->item.Re())
+		} else {
+			if (this->mayor(complejo))
 				this->nodo->de.Borrar(complejo);
 			else
 				this->nodo->iz.Borrar(complejo);
@@ -187,19 +214,18 @@ bool TABBCom::Borrar(const TComplejo &complejo){
 	return borrado;
 }
 
-void TABBCom::Sustituir(){
+void TABBCom::Sustituir() {
 	TNodoABB *anterior, *posterior, *actual;
 
 	actual = this->nodo;
 	posterior = this->nodo->iz.nodo; //Tenemos que sustituir por algun nodo del subarbol iz
 	anterior = this->nodo;
 
-	if(posterior->de.EsVacio()){//No hay subarbol der por lo tanto este es el mayor.
+	if (posterior->de.EsVacio()) { //No hay subarbol der por lo tanto este es el mayor.
 		actual->item = posterior->item;
 		actual->iz.nodo = posterior->iz.nodo;
-	}
-	else{//Buscamos iterativamente el mayor de la ezquierda (estara en una hoja lo mas a la derecha posible).
-		while(!posterior->de.EsVacio()){
+	} else { //Buscamos iterativamente el mayor de la ezquierda (estara en una hoja lo mas a la derecha posible).
+		while (!posterior->de.EsVacio()) {
 			anterior = posterior;
 			posterior = posterior->de.nodo;
 		}
@@ -210,62 +236,44 @@ void TABBCom::Sustituir(){
 }
 
 bool TABBCom::esHoja() const {
-	if(this->nodo->de.EsVacio() && this->nodo->iz.EsVacio())
+	if (this->nodo->de.EsVacio() && this->nodo->iz.EsVacio())
 		return true;
-	else return false;
+	else
+		return false;
 }
 
-bool TABBCom::Buscar(const TComplejo &complejo)const{
-	if(!EsVacio()){
-		if(this->nodo->item == complejo)
-			return true;
-		else{
-			if(this->nodo->iz.Buscar(complejo) ||
-					this->nodo->de.Buscar(complejo))
-				return true;
-			else
-				return false;
-		}
-	}
-
-	return false;
-}
-
-TComplejo TABBCom::Raiz() const{
-	if(this->EsVacio())
+TComplejo TABBCom::Raiz() const {
+	if (this->EsVacio())
 		return TComplejo();
 	else
 		return nodo->item;
 }
 
-int TABBCom::Altura() const{
-	if(!EsVacio()){
+int TABBCom::Altura() const {
+	if (!EsVacio()) {
 		return 1 + max(nodo->de.Altura(), nodo->iz.Altura());
-	}
-	else
+	} else
 		return 0;
 }
 
-int TABBCom::Nodos() const{
-	if(!EsVacio()){
+int TABBCom::Nodos() const {
+	if (!EsVacio()) {
 		return 1 + nodo->de.Nodos() + nodo->iz.Nodos();
-	}
-	else return 0;
-}
-
-int TABBCom::NodosHoja() const{
-	if(!EsVacio()){
-		if(!nodo->iz.EsVacio() || !nodo->de.EsVacio()){
-			return nodo->iz.NodosHoja() + nodo->de.NodosHoja();
-		}
-		else
-			return 1;
-	}
-	else
+	} else
 		return 0;
 }
 
-TVectorCom TABBCom::Inorden() const{
+int TABBCom::NodosHoja() const {
+	if (!EsVacio()) {
+		if (!nodo->iz.EsVacio() || !nodo->de.EsVacio()) {
+			return nodo->iz.NodosHoja() + nodo->de.NodosHoja();
+		} else
+			return 1;
+	} else
+		return 0;
+}
+
+TVectorCom TABBCom::Inorden() const {
 	int posicion = 1;
 	TVectorCom v(this->Nodos());
 	this->InordenAux(v, posicion);
@@ -289,7 +297,7 @@ TVectorCom TABBCom::Postorden() const {
 	return v;
 }
 
-TVectorCom TABBCom::Niveles() const{
+TVectorCom TABBCom::Niveles() const {
 	TVectorCom v(this->Nodos());
 	int posicion = 1;
 
@@ -298,8 +306,8 @@ TVectorCom TABBCom::Niveles() const{
 	return v;
 }
 
-void TABBCom::NivAux(TVectorCom &v, int &pos) const{
-	while(!this->EsVacio()){
+void TABBCom::NivAux(TVectorCom &v, int &pos) const {
+	while (!this->EsVacio()) {
 		v[pos] = this->nodo->item;
 		pos++;
 		this->nodo->iz.NivAux(v, pos);
@@ -307,14 +315,32 @@ void TABBCom::NivAux(TVectorCom &v, int &pos) const{
 	}
 }
 
-void TABBCom::InordenAux(TVectorCom &v, int &x) const{
+void TABBCom::InordenAux(TVectorCom &v, int &x) const {
+	if (!this->EsVacio()) {
+		if (this->esHoja()) { //Es un nodo hoja
+			//Lo añado al vector y acabo recur
+			v[x] = this->nodo->item;
+			x++;
+		} else {
+			if (this->nodo->iz.EsVacio()) {				//No tiene subarbol izq
+				//Añado el item al vector y sigo con el der
+				v[x] = this->nodo->item;
+				x++;
+				this->InordenAux(v, x);
+			} else {					//No tiene hijo der
+										//Lamo recur al hijo izq y al acabar añado item
+				this->InordenAux(v, x);
+				v[x] = this->nodo->item;
+				x++;
+			}
+		}
+	}
+}
+
+void TABBCom::PreordenAux(TVectorCom &v, int &x) const {
 
 }
 
-void TABBCom::PreordenAux(TVectorCom &v, int &x) const{
-
-}
-
-void TABBCom::PostordenAux(TVectorCom &v, int &x) const{
+void TABBCom::PostordenAux(TVectorCom &v, int &x) const {
 
 }

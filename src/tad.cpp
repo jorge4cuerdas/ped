@@ -1,27 +1,38 @@
+/* Prueba:
+    - CONSTR. COPIA , "=" ; posible copia de punteros 
+*/
+
 #include <iostream>
-
-using namespace std;
-
+#include "tabbcom.h"
 #include "tcomplejo.h"
+#include "tvectorcom.h"
+using namespace std;
 
 int
 main(void)
 {
-  TComplejo a;
-  TComplejo b(a);
-  TComplejo c;
-  c = a;
-  
-  if(a == b)
-    cout << "SI" << endl;
+
+  TABBCom a;
+
+  TComplejo c1(1), c2(2, 3);
+
+  a.Insertar(c1);
+
+  TABBCom b(a), c;
+  c=b;
+
+  a.Insertar(c2);
+  if( a.Inorden() == b.Inorden() )
+        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
   else
-    cout << "NO" << endl;
+	cout << "CORRECTO CONSTRUCTOR DE COPIA" << endl;
 
-  if(a == c)
-    cout << "SI" << endl;
+
+  b.Insertar(c2);
+  if( b.Inorden() == c.Inorden() )
+        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
   else
-    cout << "NO" << endl;
+	cout << "CORRECTA ASIGNACION" << endl;
 
-
-  return 0;
+  return 1;
 }
