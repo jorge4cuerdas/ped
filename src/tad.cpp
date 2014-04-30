@@ -1,5 +1,5 @@
 /* Prueba:
-    - Insertar(), Borrar() 
+    - ALTURA, NODOS, NODOSHOJA   
 */
 
 #include <iostream>
@@ -10,48 +10,80 @@ using namespace std;
 
 int
 main(void)
-{  
+{
+
+  
   TABBCom a;
+ 
+  TComplejo c100(100, 1);
+  TComplejo c50(50, 1);
+  TComplejo c20(20, 1);
+  TComplejo c110(110, 1);
+ 
+  cout << a.Borrar(c100) << endl;
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  TComplejo c1(1, 1);
-  TComplejo c2(2, 2);
-  TComplejo c3(3, 3);
-  TComplejo c4(4, 4);
-  TComplejo c5(5, 5);
-  TComplejo c6(6, 6);
-  TComplejo c7(7, 7);
+  cout << a.Insertar(c100) << endl;
+  cout << a.Buscar(c100) << endl;
+  cout << a.Buscar(c50) << endl;
+  cout << a.Insertar(c100) << endl;
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  a.Insertar(c5);
-  a.Insertar(c2);
-  a.Insertar(c1);
-  a.Insertar(c3);
-  a.Insertar(c6);
+  a.Insertar(c50);
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  if(a.Insertar(c7))
-        cout << "Insertado" << endl;
-  else
-	cout << "Error NO INSERCION" << endl;
+  a.Insertar(c20);
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  if(a.Insertar(c7))
-        cout << "Error INSERCION" << endl;
-  else
-	cout << "No insertado" << endl;
+  a.Insertar(c110);
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  if(a.Borrar(c7))
-        cout << "Borrado" << endl;
-  else
-	cout << "Error NO BORRADO" << endl;
+  cout << a.Borrar(c20) << endl;
+  cout << a.Borrar(c20) << endl;
+  cout <<"Altura: "<<a.Altura()<<endl;
+  cout <<"Nodos: "<<a.Nodos()<<endl;
+  cout <<"NodosHoja: "<<a.NodosHoja()<<endl;
+  cout <<"Raiz: "<<a.Raiz()<<endl;
 
-  if(a.Borrar(c7))
-        cout << "Error BORRADO" << endl;
-  else
-	cout << "No borrado" << endl;
+  TABBCom ordenes;
+  TComplejo a1(1,0);
+  TComplejo a2(2,0);
+  TComplejo a3(3,0);
+  TComplejo a4(4,0);
+  TComplejo a5(5,0);
+  TComplejo a6(6,0);
+  TComplejo a7(7,0);
 
-  if(a.Insertar(c7))
-        cout << "Insertado" << endl;
-  else
-	cout << "Error NO INSERCION" << endl;
+  cout << ordenes.Insertar(a4) << endl;
+  cout << ordenes.Insertar(a2) << endl;
+  cout << ordenes.Insertar(a6) << endl;
+  cout << ordenes.Insertar(a1) << endl;
+  cout << ordenes.Insertar(a3) << endl;
+  cout << ordenes.Insertar(a5) << endl;
+  cout << ordenes.Insertar(a7) << endl;
 
+  cout << ordenes.Inorden() << endl;
+  cout << ordenes.Preorden() << endl;
+  cout << ordenes.Postorden() << endl;
+  cout << ordenes.Niveles() << endl;
+  cout << "pene" << endl;
+  cout << ordenes << endl;
 
-  return 1;
+  return 1; 
+
 }

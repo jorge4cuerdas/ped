@@ -309,11 +309,25 @@ TVectorCom TABBCom::Niveles() const {
 }
 
 void TABBCom::NivAux(TVectorCom &v, int &pos) const {
-	while (!this->EsVacio()) {
-		v[pos] = this->nodo->item;
-		pos++;
-		this->nodo->iz.NivAux(v, pos);
-		this->nodo->de.NivAux(v, pos);
+	if(!this->EsVacio()){
+		std::queue<TNodoABB*> mycola;
+		TNodoABB *aux = this->nodo;
+		mycola.push(aux);
+
+		while(!mycola.empty()){
+			TNodoABB *temp = mycola.front();
+			v[pos] = (*temp).item;
+			pos++;
+
+			mycola.pop();
+
+			if(!(*temp).iz.EsVacio()){
+				mycola.push((*temp).iz.nodo);
+			}
+			if(!(*temp).de.EsVacio()){
+				mycola.push((*temp).de.nodo);
+			}
+		}
 	}
 }
 
@@ -341,8 +355,8 @@ void TABBCom::PreordenAux(TVectorCom &v, int &x) const {
 		} else {
 			v[x] = this->nodo->item;
 			x++;
-			this->nodo->iz.InordenAux(v, x);
-			this->nodo->de.InordenAux(v, x);
+			this->nodo->iz.PreordenAux(v, x);
+			this->nodo->de.PreordenAux(v, x);
 		}
 	}
 }
@@ -354,8 +368,8 @@ void TABBCom::PostordenAux(TVectorCom &v, int &x) const {
 			v[x] = this->nodo->item;
 			x++;
 		} else {
-			this->nodo->iz.InordenAux(v, x);
-			this->nodo->de.InordenAux(v, x);
+			this->nodo->iz.PostordenAux(v, x);
+			this->nodo->de.PostordenAux(v, x);
 			v[x] = this->nodo->item;
 			x++;
 		}

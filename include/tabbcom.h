@@ -9,6 +9,7 @@
 #define TABBCOM_CPP_
 
 #include<iostream>
+#include<queue>
 
 #include "tvectorcom.h"
 
