@@ -54,11 +54,13 @@ TABBCom::~TABBCom() {
 		TNodoABB *aux = new TNodoABB();
 		aux = this->nodo;
 
+		this->nodo->iz.~TABBCom();
+		this->nodo->de.~TABBCom();
+
 		delete this->nodo;
 		this->nodo = NULL;
 
-		this->nodo->iz.~TABBCom();
-		this->nodo->de.~TABBCom();
+
 	}
 }
 
@@ -89,7 +91,7 @@ bool TABBCom::operator==(const TABBCom &arbol) const {
 }
 
 bool TABBCom::EsVacio() const {
-	if (nodo)
+	if (this->nodo)
 		return false;
 	else
 		return true;
@@ -119,14 +121,14 @@ bool TABBCom::Insertar(const TComplejo &complejo) {
 		aux->item = complejo;
 		this->nodo = aux;
 
-		return true;
+		insertado = true;
 	}
 	else{
 		if(!this->Buscar(complejo)){
 			if(this->mayor(complejo))
-				this->nodo->de.Insertar(complejo);
+				insertado = this->nodo->de.Insertar(complejo);
 			else
-				this->nodo->iz.Insertar(complejo);
+				insertado = this->nodo->iz.Insertar(complejo);
 		}
 	}
 
@@ -205,9 +207,9 @@ bool TABBCom::Borrar(const TComplejo &complejo) {
 			borrado = true;
 		} else {
 			if (this->mayor(complejo))
-				this->nodo->de.Borrar(complejo);
+				borrado = this->nodo->de.Borrar(complejo);
 			else
-				this->nodo->iz.Borrar(complejo);
+				borrado = this->nodo->iz.Borrar(complejo);
 		}
 	}
 
@@ -317,30 +319,51 @@ void TABBCom::NivAux(TVectorCom &v, int &pos) const {
 
 void TABBCom::InordenAux(TVectorCom &v, int &x) const {
 	if (!this->EsVacio()) {
-		if (this->esHoja()) { //Es un nodo hoja
+		if (this->esHoja()){//Es un nodo hoja
 			//Lo añado al vector y acabo recur
 			v[x] = this->nodo->item;
 			x++;
 		} else {
-			if (this->nodo->iz.EsVacio()) {				//No tiene subarbol izq
-				//Añado el item al vector y sigo con el der
-				v[x] = this->nodo->item;
-				x++;
-				this->InordenAux(v, x);
-			} else {					//No tiene hijo der
-										//Lamo recur al hijo izq y al acabar añado item
-				this->InordenAux(v, x);
-				v[x] = this->nodo->item;
-				x++;
-			}
+			this->nodo->iz.InordenAux(v, x);
+			v[x] = this->nodo->item;
+			x++;
+			this->nodo->de.InordenAux(v, x);
 		}
 	}
 }
 
 void TABBCom::PreordenAux(TVectorCom &v, int &x) const {
-
+	if (!this->EsVacio()) {
+		if (this->esHoja()) {			//Es un nodo hoja
+			//Lo añado al vector y acabo recur
+			v[x] = this->nodo->item;
+			x++;
+		} else {
+			v[x] = this->nodo->item;
+			x++;
+			this->nodo->iz.InordenAux(v, x);
+			this->nodo->de.InordenAux(v, x);
+		}
+	}
 }
 
 void TABBCom::PostordenAux(TVectorCom &v, int &x) const {
+	if (!this->EsVacio()) {
+		if (this->esHoja()) {				//Es un nodo hoja
+			//Lo añado al vector y acabo recur
+			v[x] = this->nodo->item;
+			x++;
+		} else {
+			this->nodo->iz.InordenAux(v, x);
+			this->nodo->de.InordenAux(v, x);
+			v[x] = this->nodo->item;
+			x++;
+		}
+	}
+}
 
+ostream & operator<<(ostream &salida, const TABBCom &arbol){
+	salida << arbol.Niveles();
+
+	return salida;
 }
