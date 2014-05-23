@@ -10,21 +10,7 @@
 
 #include "tvectorcom.h"
 
-class TNodoAVL {
-	friend class TAVLCom;
-public:
-	TNodoAVL();
-	TNodoAVL(const TNodoAVL &);
-	~TNodoAVL();
-	TNodoAVL & operator=(const TNodoAVL &);
-
-private:
-	TComplejo item;
-	TAVLCom iz, de;
-	int fe;
-
-	void copiarNodo(const TNodoAVL &);
-};
+class TNodoAVL;
 
 class TAVLCom {
 	friend class TNodoAVL;
@@ -49,6 +35,7 @@ public:
 	TVectorCom Preorden() const;
 	TVectorCom Postorden() const;
 	TComplejo Raiz() const;
+	TComplejo maxIzq(const TAVLCom &);
 
 private:
 	TNodoAVL *raiz;
@@ -57,6 +44,31 @@ private:
 	void InordenAux(TVectorCom &, int &) const;
 	void PreordenAux(TVectorCom &, int &) const;
 	void PostordenAux(TVectorCom &, int &) const;
+	bool esHoja() const;
+	void actualizarFE();
+	bool mayor(TComplejo) const ;
+	bool comprobarFe();
+	void reestructurarLL();
+	void reestructurarLR();
+	void reestructurarRL();
+	void reestructurarRR();
+	bool BorrarAux (const TComplejo &);
+};
+
+class TNodoAVL {
+	friend class TAVLCom;
+public:
+	TNodoAVL();
+	TNodoAVL(const TNodoAVL &);
+	~TNodoAVL();
+	TNodoAVL & operator=(const TNodoAVL &);
+
+private:
+	TComplejo item;
+	TAVLCom iz, de;
+	int fe;
+
+	void copiarNodo(const TNodoAVL &);
 };
 
 #endif /* TAVLCOM_H_ */
